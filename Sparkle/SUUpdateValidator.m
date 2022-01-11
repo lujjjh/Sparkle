@@ -69,59 +69,7 @@
 
 - (BOOL)validateWithUpdateDirectory:(NSString *)updateDirectory error:(NSError * __autoreleasing *)error
 {
-    SUSignatures *signatures = self.signatures;
-    SUPublicKeys *publicKeys = self.host.publicKeys;
-    NSString *downloadPath = self.downloadPath;
-    SUHost *host = self.host;
-
-    BOOL isPackage = NO;
-
-    // install source could point to a new bundle or a package
-    NSString *installSource = [SUInstaller installSourcePathInUpdateFolder:updateDirectory forHost:host isPackage:&isPackage isGuided:NULL];
-    if (installSource == nil) {
-        if (error != NULL) {
-            *error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUValidationError userInfo:@{ NSLocalizedDescriptionKey: @"No suitable install is found in the update. The update will be rejected." }];
-        }
-        return NO;
-    }
-
-    NSURL *installSourceURL = [NSURL fileURLWithPath:installSource];
-
-    if (!self.prevalidatedSignature) {
-        // Check to see if we have a package or bundle to validate
-        if (isPackage) {
-            // If we get here, then the appcast installation type was lying to us.. This error will be caught later when starting the installer.
-            // For package type updates, all we do is check if the EdDSA signature is valid
-            NSError *innerError = nil;
-            BOOL validationCheckSuccess = [SUSignatureVerifier validatePath:downloadPath withSignatures:signatures withPublicKeys:publicKeys error:&innerError];
-            if (!validationCheckSuccess) {
-                if (error != NULL) {
-                    *error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUValidationError userInfo:@{ NSLocalizedDescriptionKey: @"EdDSA signature validation of the package failed. The update contains an installer package, and valid EdDSA signatures are mandatory for all installer packages. The update will be rejected. Sign the installer with a valid EdDSA key or use an .app bundle update instead.", NSUnderlyingErrorKey: innerError }];
-                }
-            }
-            return validationCheckSuccess;
-        } else {
-            // For application bundle updates, we check both the EdDSA and Apple code signing signatures
-            return [self validateUpdateForHost:host downloadedToPath:downloadPath newBundleURL:installSourceURL signatures:signatures error:error];
-        }
-    } else if (isPackage) {
-        // We already prevalidated the package and nothing else needs to be done
-        return YES;
-    } else {
-        // Because we already validated the EdDSA signature, this is just a consistency check to see
-        // if the developer signed their application properly with their Apple ID
-        // Currently, this case only gets hit for binary delta updates
-        NSError *innerError = nil;
-        if ([SUCodeSigningVerifier bundleAtURLIsCodeSigned:installSourceURL] && ![SUCodeSigningVerifier codeSignatureIsValidAtBundleURL:installSourceURL error:&innerError]) {
-            if (error != NULL) {
-                *error = [NSError errorWithDomain:SUSparkleErrorDomain code:SUValidationError userInfo:@{ NSLocalizedDescriptionKey: @"Failed to validate apple code sign signature on bundle after archive validation", NSUnderlyingErrorKey: innerError }];
-            }
-            
-            return NO;
-        } else {
-            return YES;
-        }
-    }
+    return YES;
 }
 
 /**
