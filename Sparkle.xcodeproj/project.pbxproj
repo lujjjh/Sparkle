@@ -4073,6 +4073,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941CA0D94A70100DD942E /* ConfigFrameworkDebug.xcconfig */;
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 2012;
+				MARKETING_VERSION = 2.0.2;
 			};
 			name = Coverage;
 		};
@@ -4113,6 +4115,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA1941CA0D94A70100DD942E /* ConfigFrameworkDebug.xcconfig */;
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 2012;
+				MARKETING_VERSION = 2.0.2;
 			};
 			name = Debug;
 		};
@@ -4120,6 +4124,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 72A40F082956120D007C7DD5 /* ConfigFrameworkRelease.xcconfig */;
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 2012;
+				MARKETING_VERSION = 2.0.2;
 			};
 			name = Release;
 		};
